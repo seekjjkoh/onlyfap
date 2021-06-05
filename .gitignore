@@ -1,0 +1,12 @@
+# editor stuffs
+.vscode/
+
+# node stuffs
+node_modules/
+
+# go stuffs
+vendor/
+server
+
+# log stuffs
+*.log

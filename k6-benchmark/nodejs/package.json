@@ -1,0 +1,11 @@
+{
+  "name": "express-benchmark",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "jjkoh95@gmail.com",
+  "license": "UNLICENSED",
+  "private": false,
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
