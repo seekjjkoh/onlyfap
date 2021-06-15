@@ -1,4 +1,4 @@
-url := "http://host.docker.internal:1803"
+url := "http://host.docker.internal:8000"
 vus = 100
 duration = 30s
 
@@ -10,4 +10,4 @@ docker-run:
 	-e URL=${url} \
 	loadimpact/k6 run \
 	--vus ${vus} --duration ${duration} \
-	- <script.js 
+	- <script.js
