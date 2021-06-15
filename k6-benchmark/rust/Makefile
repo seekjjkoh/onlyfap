@@ -2,7 +2,7 @@ run-server:
 	cargo run
 
 go-build:
-	cargo build --release
+	cargo build --target x86_64-unknown-linux-musl --release
 
 docker-build:
 	docker build -t rust-benchmark:0.0.1 .
