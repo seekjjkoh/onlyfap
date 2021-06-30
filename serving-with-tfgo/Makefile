@@ -1,6 +1,3 @@
-vus := 100
-duration = 60s
-
 python-model-train-dnn:
 	python model/dnn.py
 

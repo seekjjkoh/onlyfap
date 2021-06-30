@@ -1,12 +1,19 @@
 # editor stuffs
 .vscode/
 
+.metals/
+
 # node stuffs
 node_modules/
 
 # go stuffs
 vendor/
-server
 
 # log stuffs
 *.log
+
+# data stuffs -- from kaggle
+sample_submission.csv
+test.csv
+train.csv
+
