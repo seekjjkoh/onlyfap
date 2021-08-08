@@ -17,7 +17,7 @@ go-offline-predict-cnn:
 	go run offline-prediction/tfgo/main.go --modelPath=./output/tf-cnn --output=./data/go_cnn_submission.csv
 
 python-run-server:
-	python serving/flask/main.py
+	python serving/flask/app.py
 
 go-run-server:
 	go run serving/go/main.go
