@@ -1,0 +1,26 @@
+<html>
+
+<head>
+	<title>PongRun</title>
+</head>
+
+<body>
+	<h1>PongRun</h1>
+	<button id="newgame">Click</button>
+	<span> to start a new game</span>
+	<script lang="js">
+		function uuidv4() {
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+				var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+				return v.toString(16);
+			});
+		}
+
+		const ele = document.getElementById("newgame");
+		ele.addEventListener("click", () => {
+			window.location.href = `/pong.html?id=${uuidv4()}`;
+		});
+	</script>
+</body>
+
+</html>
