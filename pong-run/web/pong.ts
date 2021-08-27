@@ -1,6 +1,7 @@
+// pong.ts
 
-
-const url = "ws://127.0.0.1:8080/ws"
+// const url = `ws://localhost:8080/ws${window.location.search}`;
+const url = `wss://${window.location.host}/ws${window.location.search}`;
 let ws: WebSocket;
 let player = 0;
 let svg: HTMLElement;
@@ -12,6 +13,7 @@ let gameScore = {
   p1: 0,
   p2: 0,
 };
+let lastMouseEvent = Date.now();
 
 function pong() {
   const svg = document.getElementById("canvas")!;
@@ -49,11 +51,11 @@ function setup() {
     .attr("id", "ball");
   p1 = new Elem(svg, "rect")
     .attr("x", 50).attr("y", 70)
-    .attr("width", 8).attr("height", 50)
+    .attr("width", 8).attr("height", 100)
     .attr("fill", "#95B3D7");
   p2 = new Elem(svg, "rect")
     .attr("x", 550).attr("y", 70)
-    .attr("width", 8).attr("height", 50)
+    .attr("width", 8).attr("height", 100)
     .attr("fill", "#95B3D7");
 };
 
@@ -78,25 +80,33 @@ function wsHandler(event: MessageEvent<any>) {
 };
 
 function registerPlayer(player: number) {
+  if (player != 1 && player != 2) {
+    return;
+  }
   Observable
     .fromEvent<MouseEvent>(document, "mousemove")
     .map(({ clientX, clientY }) => ({
       x: clientX,
-      y: clientY - 175, // 150px (title) + 25px (height)
+      y: clientY - 150, // 150px (title)
     }))
     .subscribe(({ x, y }) => {
-      if (y > 550) {
-        y = 550;
+      if (y > 500) {
+        y = 500;
       } else if (y < 0) {
         y = 0;
       }
       // emit to websocket
+      const newNow = Date.now()
+      if (newNow - lastMouseEvent < 50) {
+        return;
+      }
+      lastMouseEvent = newNow;
       ws.send(JSON.stringify({ action: "move", data: { type: "player", player, x, y } }));
       if (player != 1) {
         return;
       }
       if (gameState == 0) {
-        emitBallPosition(Number(p1.attr("x")) + 10, y + 25);
+        emitBallPosition(Number(p1.attr("x")) + 10, y + 50);
       }
     });
   Observable.fromEvent<MouseEvent>(document, "mousedown")
@@ -124,33 +134,33 @@ function emitBallPosition(x: number, y: number) {
 function handleStates() {
   if (gameState == 0) {
     gameState = 1;
-    let xVar = 5;
+    let xVar = 10;
     let yVar = randomSign() * (5 + Math.random() * 5);
     const animate = window.setInterval(() => {
       if (Number(ball.attr('cx')) == 550
-        && (Number(ball.attr('cy')) >= Number(p2.attr('y')) - 25 && Number(ball.attr('cy')) <= Number(p2.attr('y')) + 25)) {
-        xVar = -5;
-        yVar = 5 + Math.random() * 5;
+        && (Number(ball.attr('cy')) >= Number(p2.attr('y')) && Number(ball.attr('cy')) <= Number(p2.attr('y')) + 100)) {
+        xVar = -10;
+        yVar = 5 + Math.ceil(Math.random() * 5);
       } else if (Number(ball.attr('cx')) == 50
-        && (Number(ball.attr('cy')) >= Number(p1.attr('y')) - 25 && Number(ball.attr('cy')) <= Number(p1.attr('y')) + 25)) {
-        xVar = 5;
-        yVar = randomSign() * (5 + Math.random() * 5);
-      } else if (Number(ball.attr('cy')) < 8 || Number(ball.attr('cy')) >= 592) {
+        && (Number(ball.attr('cy')) >= Number(p1.attr('y')) && Number(ball.attr('cy')) <= Number(p1.attr('y')) + 100)) {
+        xVar = 10;
+        yVar = randomSign() * Math.ceil(5 + Math.random() * 5);
+      } else if (Number(ball.attr('cy')) <= 8 || Number(ball.attr('cy')) >= 592) {
         // bounce
         yVar = -1 * yVar;
-      } else if (Number(ball.attr('cx')) < 8) {
-        clearInterval(animate);
+      } else if (Number(ball.attr('cx')) <= 10) {
         gameScore.p2++
         gameState = 0;
         broadcastState("p2 scored");
-      } else if (Number(ball.attr('cx')) >= 592) {
         clearInterval(animate);
+      } else if (Number(ball.attr('cx')) >= 590) {
         gameScore.p1++
         gameState = 0;
         broadcastState("p1 scored");
+        clearInterval(animate);
       }
       emitBallPosition(xVar + Number(ball.attr("cx")), yVar + Number(ball.attr("cy")))
-    }, 20); // 60fps
+    }, 50);
   }
 }
 

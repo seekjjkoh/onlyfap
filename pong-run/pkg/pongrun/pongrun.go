@@ -30,6 +30,7 @@ type PongRun struct {
 }
 
 func New(redisHost, redisPort string, redisMaxConn int) *PongRun {
+	// fmt.Println("redis", fmt.Sprintf("%s:%s", redisHost, redisPort))
 	return &PongRun{
 		Pool: &redis.Pool{
 			MaxIdle: redisMaxConn,
@@ -99,10 +100,15 @@ func (pr *PongRun) Subscribe(channelName string, wsConn *websocket.Conn) {
 
 func (pr *PongRun) goBroadcastWs(channelName string) error {
 	for msg := range pr.Subscriber.S[channelName].Messages {
+		toRemove := make([]*websocket.Conn, 0)
 		for _, wsConn := range pr.Subscriber.S[channelName].Conns {
 			if err := wsConn.WriteMessage(websocket.TextMessage, msg); err != nil {
 				zap.S().Error(err)
+				toRemove = append(toRemove, wsConn)
 			}
+		}
+		for _, wsConn := range toRemove {
+			pr.DeRegisterWs(channelName, wsConn)
 		}
 	}
 	return nil
@@ -116,6 +122,9 @@ func (pr *PongRun) goSubscribeChannel(channelName string) error {
 	for {
 		switch v := psc.Receive().(type) {
 		case redis.Message:
+			if _, exist := pr.Subscriber.S[channelName]; !exist {
+				return errors.New("channel closed")
+			}
 			pr.Subscriber.S[channelName].Messages <- v.Data
 		case redis.Subscription:
 			zap.S().Debug("New subscription")
@@ -154,4 +163,28 @@ func (pr *PongRun) GetState(key string) ([]byte, error) {
 		return nil, errors.New("empty key")
 	}
 	return v.([]byte), err
+}
+
+func (pr *PongRun) DeRegisterWs(channelName string, ws *websocket.Conn) {
+	if _, exist := pr.Subscriber.S[channelName]; !exist {
+		return
+	}
+	wss := pr.Subscriber.S[channelName].Conns
+	toRemove := -1
+	for i, c := range wss {
+		if c == ws {
+			toRemove = i
+			break
+		}
+	}
+	if toRemove == 0 {
+		pr.Subscriber.M.Lock()
+		delete(pr.Subscriber.S, channelName)
+		pr.Subscriber.M.Unlock()
+		return
+	}
+	if toRemove > 0 {
+		copy(pr.Subscriber.S[channelName].Conns[toRemove:], pr.Subscriber.S[channelName].Conns[toRemove+1:])
+		pr.Subscriber.S[channelName].Conns = pr.Subscriber.S[channelName].Conns[:len(pr.Subscriber.S[channelName].Conns)-1]
+	}
 }

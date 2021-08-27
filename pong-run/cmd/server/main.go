@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -11,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var pr = pongrun.New("127.0.0.1", "6379", 10)
+var pr = pongrun.New(os.Getenv("REDISHOST"), os.Getenv("REDISPORT"), 10)
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -50,15 +51,28 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 
 	// register
 	pr.Subscribe(channelName, ws)
-	count := len(pr.Subscriber.S[channelName].Conns)
-	if count <= 2 {
-		// player
-		ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"player":%d}`, count)))
+	countB, err := pr.GetState(channelName)
+	var count byte
+	if err != nil {
+		zap.S().Error(err)
+		count = 1
+		pr.SetState(channelName, []byte{1})
+	} else {
+		count = countB[0] + 1
+		if count == 2 {
+			pr.SetState(channelName, []byte{count})
+		}
 	}
+	zap.S().Info("count", count)
+	ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"player":%d}`, count)))
 	for {
 		_, data, err := ws.ReadMessage()
 		if err != nil {
 			zap.S().Error(err)
+			if websocket.IsCloseError(err, websocket.CloseGoingAway) || err == io.EOF {
+				pr.DeRegisterWs(channelName, ws)
+				return
+			}
 			return
 		}
 		pr.Publish(channelName, data)
