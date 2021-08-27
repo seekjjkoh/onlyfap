@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	qName = flag.String("qName", "queue1", "Queue name")
+	qName = flag.String("qName", "h1", "Queue name")
 )
 
 type Message struct {

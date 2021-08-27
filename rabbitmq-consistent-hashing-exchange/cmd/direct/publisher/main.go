@@ -36,7 +36,6 @@ func main() {
 				Content: []byte(fmt.Sprintf(`{"hash_id":"%s"}`, id)),
 			}
 			headers := amqp.Table{}
-			headers["hash-on"] = msg.HashID
 			msgID := uuid.New()
 			pb := amqp.Publishing{
 				ContentType: "application/json",

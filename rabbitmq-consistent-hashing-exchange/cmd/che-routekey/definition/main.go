@@ -4,12 +4,12 @@ import "github.com/streadway/amqp"
 
 func main() {
 	cs := "amqp://guest:guest@localhost:5672/"
-	topic := "hash.exchange"
+	exchange := "hash.exchange"
 	queues := map[string]string{
-		"queue1": "1",
-		"queue2": "2",
-		"queue3": "3",
-		"queue4": "4",
+		"q1": "1",
+		"q2": "2",
+		"q3": "3",
+		"q4": "4",
 	}
 
 	conn, err := amqp.Dial(cs)
@@ -24,7 +24,7 @@ func main() {
 	defer ch.Close()
 
 	// declare an exchange (x-consistent-hash)
-	err = ch.ExchangeDeclare(topic, "x-consistent-hash", true, false, false, false, amqp.Table{})
+	err = ch.ExchangeDeclare(exchange, "x-consistent-hash", true, false, false, false, amqp.Table{})
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +39,7 @@ func main() {
 
 	// bind queues to exchange with its routing key
 	for qName, qKey := range queues {
-		err = ch.QueueBind(qName, qKey, topic, false, nil)
+		err = ch.QueueBind(qName, qKey, exchange, false, nil)
 		if err != nil {
 			panic(err)
 		}

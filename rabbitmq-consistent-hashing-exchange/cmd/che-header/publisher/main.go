@@ -24,9 +24,10 @@ func main() {
 	}
 	defer ch.Close()
 
-	exchange := "hash.exchange"
+	exchange := "hashheader.exchange"
+	hashHeader := "hh"
 
-	keys := []string{"abc", "xyz", "1001", "1002", "q2"}
+	keys := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "a", "b", "c"}
 
 	for _, k := range keys {
 		for i := 0; i < 100; i++ {
@@ -35,10 +36,8 @@ func main() {
 				HashID:  fmt.Sprint(id),
 				Content: []byte(fmt.Sprintf(`{"hash_id":"%s"}`, id)),
 			}
-
 			headers := amqp.Table{}
-			headers["hash-on"] = msg.HashID
-
+			headers[hashHeader] = k
 			msgID := uuid.New()
 			pb := amqp.Publishing{
 				ContentType: "application/json",
@@ -46,8 +45,7 @@ func main() {
 				Headers:     headers,
 				MessageId:   msgID.String(),
 			}
-
-			err = ch.Publish(exchange, msg.HashID, false, false, pb)
+			err = ch.Publish(exchange, "", false, false, pb)
 			if err != nil {
 				panic(err)
 			}
