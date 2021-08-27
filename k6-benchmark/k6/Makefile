@@ -1,4 +1,4 @@
-url := "http://host.docker.internal:8000"
+url := "http://host.docker.internal:2345"
 vus = 100
 duration = 30s
 
