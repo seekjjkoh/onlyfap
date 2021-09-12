@@ -7,17 +7,17 @@ resource "google_cloud_run_service" "pongrun" {
       containers {
         image = var.image_url
         env {
-          name = "REDISHOST"
+          name  = "REDISHOST"
           value = google_redis_instance.rediscache.host
         }
         env {
-          name = "REDISPORT"
+          name  = "REDISPORT"
           value = google_redis_instance.rediscache.port
         }
         resources {
           limits = {
             memory = "128Mi"
-            cpu = "1"
+            cpu    = "1"
           }
         }
       }
@@ -26,7 +26,7 @@ resource "google_cloud_run_service" "pongrun" {
     metadata {
       annotations = {
         "run.googleapis.com/vpc-access-connector" = var.vpc_name
-        "autoscaling.knative.dev/maxScale" = "10"
+        "autoscaling.knative.dev/maxScale"        = "10"
       }
     }
   }

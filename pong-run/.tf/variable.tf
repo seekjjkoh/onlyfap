@@ -1,7 +1,7 @@
 variable "image_url" {
-	type = string
+  type = string
 }
 
 variable "vpc_name" {
-	type = string
+  type = string
 }
