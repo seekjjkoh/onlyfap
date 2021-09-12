@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  envoy:
+    image: envoyproxy/envoy-dev:61796bd05507be47be7780623f8ac54245a0635c
+    ports:
+      - "10000:10000"
+      - "8080:8080"
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    networks:
+      - xnetwork
+  server1:
+    image: alpine:3
+    ports:
+      - "8081:8081"
+    working_dir: /workdir
+    volumes: 
+      - ./server/:/workdir/server
+    command: /workdir/server
+    networks:
+      - xnetwork
+  server2:
+    image: alpine:3
+    ports:
+      - "8082:8082"
+    working_dir: /workdir
+    volumes: 
+      - ./server/:/workdir/server
+    command: /workdir/server --port=8082 --version=v2
+    networks:
+      - xnetwork
+  server3:
+    image: alpine:3
+    ports:
+      - "8083:8083"
+    working_dir: /workdir
+    volumes: 
+      - ./server/:/workdir/server
+    command: /workdir/server --port=8083 --version=v3
+    networks:
+      - xnetwork
+    
+
+networks:
+  xnetwork:
+    driver: bridge
