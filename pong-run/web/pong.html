@@ -1,0 +1,28 @@
+<html>
+
+<head>
+    <title>PongRun</title>
+    <style>
+        @import url(style.css);
+        p.highlight {
+            color: red;
+        }
+        svg {
+            background-color: rgb(41, 41, 36);
+        }
+    </style>
+    <script src="svgelement.js"></script>
+    <script src="observable.js"></script>
+    <script src="pong.js"></script>
+</head>
+
+<body>
+    <div style="height:150px">
+        <h1>Pong</h1>
+        <div> Score : <span id="score"></span> </div>
+        <div> Game Log: <span id="gamelog"></span> </div>
+    </div>
+    <svg id="canvas" width="600" height="600" />
+</body>
+
+</html>
