@@ -6,8 +6,8 @@ github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.m
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/galeone/tensorflow/tensorflow/go v0.0.0-20210519172502-4018d721b591 h1:1UOml7GsssubL3OW53W9+kBk5BQICiG95TNXAmTrrsM=
 github.com/galeone/tensorflow/tensorflow/go v0.0.0-20210519172502-4018d721b591/go.mod h1:0LCzFWUL71lYeHtxlL/15k/+5ZKVzJk6Z+hLX1UBoUQ=
-github.com/galeone/tfgo v0.0.0-20210519185601-7d7131a16882 h1:YrghpSKeSJYE24fn/NzuAVXukc9npefUV6j10sgnj8Y=
-github.com/galeone/tfgo v0.0.0-20210519185601-7d7131a16882/go.mod h1:05ASagqJQa1Xev+FhblKviD9OAbRUWN4XAN2A1+aTd0=
+github.com/galeone/tfgo v0.0.0-20210914072119-caabdf830ee3 h1:650ZFSp2M6sftmKVEDFPlCU94i9EHLHJIMfYqCIGX08=
+github.com/galeone/tfgo v0.0.0-20210914072119-caabdf830ee3/go.mod h1:05ASagqJQa1Xev+FhblKviD9OAbRUWN4XAN2A1+aTd0=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/mock v1.1.1/go.mod h1:oTYuIxOrZwtPieC+H1uAHpcLFnEyAGVDL/k47Jfbm0A=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=

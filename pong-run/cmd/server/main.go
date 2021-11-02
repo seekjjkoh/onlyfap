@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/gorilla/websocket"
-	"github.com/jjkoh95/onlyfap/pong-run/pkg/pongrun"
+	"github.com/jjkoh95/onlyfun/pong-run/pkg/pongrun"
 	"go.uber.org/zap"
 )
 

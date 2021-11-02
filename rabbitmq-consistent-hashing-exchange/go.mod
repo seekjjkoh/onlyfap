@@ -1,6 +1,6 @@
-module github.com/jjkoh95/onlyfap/rabbitmq-consistent-hashing-exchange
+module github.com/jjkoh95/onlyfun/rabbitmq-consistent-hashing-exchange
 
-go 1.16
+go 1.17
 
 require (
 	github.com/google/uuid v1.3.0
