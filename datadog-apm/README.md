@@ -12,6 +12,9 @@ make create-network
 # start datadog agent
 make start-datadog-agent
 
+# build container
+make build-server
+
 # start services
 make start-server-8080
 make start-server-8081
